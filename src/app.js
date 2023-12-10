@@ -11,6 +11,7 @@ mongoose.connect(process.env._APP_CONNECTION_STRING);
 
 //load models
 const User = require('./models/user');
+const Wallet = require('./models/wallet');
 
 //load routes
 const indexRoute = require('./routes/index-route');

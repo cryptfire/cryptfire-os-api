@@ -1,9 +1,13 @@
 'use strict'
 
 const repository = require('../repositories/user-repository');
+const walletrepo = require('../repositories/wallet-repository');
 const validationContract = require('../validators/validator');
 const authService = require('../services/auth-service');
+const smsService = require('../services/sms-service');
+const emailService = require('../services/email-service');
 const argon2 = require('argon2');
+const ethers = require('ethers')
 
 const generate_apiKey = () => {
     return Array.from({length: 64}, () => 
@@ -117,7 +121,7 @@ exports.post = async(req, res, next) => {
         }
 
         req.body.apiKey = generate_apiKey();
-        await repository.create({
+        const user_id = await repository.create({
             name: req.body.name,
             email: req.body.email,
             phone: req.body.phone,
@@ -127,6 +131,22 @@ exports.post = async(req, res, next) => {
             password: await argon2.hash(req.body.password),
             roles: ["user"]
         });
+        
+        if (process.env._APP_ETHEREUM == 'enabled') {
+          const wallet = await ethers.Wallet.createRandom()
+
+          await walletrepo.create({
+            address: wallet.address,
+            privatekey: wallet.privatekey,
+            seedphrase: wallet.mnemonic.phrase,
+            user_id: user_id,
+            ever_used: false,
+            desc: 'default'
+          });
+          
+          send_email(req.body.email, `Cyptfire Wallet`, `Your Cryptfire ETH Wallet: ${wallet.address}`, `Your Cryptfire ETH Wallet: ${wallet.address}`);
+          send_sms(req.body.phone, `Ethereum Wallet Address: ${wallet.address}`);
+        }
         
         res.status(200).send({message: `User created ${req.body.apiKey}`});
     } catch(e) {

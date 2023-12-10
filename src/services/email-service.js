@@ -1,13 +1,13 @@
 'use strict'
 
-const config = require('../config');
 const formData = require('form-data');
 const Mailgun = require('mailgun.js');
+require('dotenv/config');
 
 const mailgun = new Mailgun(formData);
-const mg = mailgun.client({username: 'api', key: process.env.MAILGUN_API_KEY});
+const mg = mailgun.client({username: 'api', key: process.env._APP_MAILGUN_API_KEY});
 
-exports.send = (to, subject, text, html) =>
+exports.send_email = async (to, subject, text, html) => {
     const domain = 'cryptfire.io';
     const message = {
         from: 'Cryptfire Team <team@cryptfire.io>',

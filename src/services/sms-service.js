@@ -1,8 +1,9 @@
 'use strict'
 
-const client = require('twilio')(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
+const client = require('twilio')(process.env._APP_TWILIO_ACCOUNT_SID, process.env._APP_TWILIO_AUTH_TOKEN);
+require('dotenv/config');
 
-exports.send = (to, message) =>
+exports.send_sms = async (to, message) => {
   client.messages
     .create({
       body: message,
