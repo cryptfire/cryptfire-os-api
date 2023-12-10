@@ -30,8 +30,8 @@ const schema = new Schema({
     fiatBalance: {
         type: Number,
         required: true,
-        default 0
-    }.
+        default: 0
+    },
     roles: [{
         type: String,
         required: true,
@@ -47,7 +47,7 @@ const schema = new Schema({
         type: Boolean,
         required: true,
         default: false
-    }.
+    },
     phone_validated: {
         type: Boolean,
         required: true,

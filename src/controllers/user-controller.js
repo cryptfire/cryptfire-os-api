@@ -3,7 +3,6 @@
 const repository = require('../repositories/user-repository');
 const validationContract = require('../validators/validator');
 const authService = require('../services/auth-service');
-const md5 = require('md5');
 const argon2 = require('argon2');
 
 const generate_apiKey = () => {
