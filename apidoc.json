@@ -1,0 +1,6 @@
+{
+    "name": "cryptfire-os-api",
+    "version": "0.1.0",
+    "description": "Actively maintained API template with MongoDB and NodeJS",
+    "url" : "https://github.com/cryptfire/cryptfire-os-api"
+}

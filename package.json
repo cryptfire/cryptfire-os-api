@@ -1,0 +1,42 @@
+{
+  "name": "cryptfire-os-api",
+  "version": "0.1.0",
+  "description": "Official Cryptfire high-perf API, actively maintained",
+  "main": "src/app.js",
+  "scripts": {
+    "start": "node app.js",
+    "test": "node_modules/mocha/bin/mocha"
+  },
+  "keywords": [
+    "nodejs",
+    "rest",
+    "realtime",
+    "socket.io",
+    "api",
+    "jwt",
+    "authentication",
+    "sms",
+    "email"
+  ],
+  "author": "Cryptfire Team <team@cryptfire.io>",
+  "license": "GPLv3",
+  "dependencies": {
+    "body-parser": "^1.18.2",
+    "chai": "^4.1.2",
+    "debug": "^3.1.0",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "guid": "0.0.12",
+    "hotswap": "^1.1.0",
+    "http": "0.0.0",
+    "jsonwebtoken": "^7.4.0",
+    "mocha": "^5.0.1",
+    "mongoose": "^8.0.3",
+    "should": "^13.2.1"
+  },
+  "devDependencies": {
+    "apidoc": "^0.17.6",
+    "nodemon": "^1.15.0",
+    "request": "^2.83.0"
+  }
+}
