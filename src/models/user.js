@@ -27,6 +27,11 @@ const schema = new Schema({
         required: true,
         trim: true
     },
+    fiatBalance: {
+        type: Number,
+        required: true,
+        default 0
+    }.
     roles: [{
         type: String,
         required: true,
@@ -43,7 +48,22 @@ const schema = new Schema({
         required: true,
         default: false
     }.
+    phone_validated: {
+        type: Boolean,
+        required: true,
+        default: false
+    },
+    email_validated: {
+        type: Boolean,
+        required: true,
+        default: false
+    },
     created: {
+        type: Date,
+        required: true,
+        default: Date.now
+    },
+    modified: {
         type: Date,
         required: true,
         default: Date.now
