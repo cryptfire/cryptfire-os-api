@@ -16,6 +16,7 @@ exports.getById = async(id) => {
 exports.create = async(data) => {
     let user = new User(data);
     await user.save();
+    return user;
 }
 
 exports.authenticate = async(data) => {

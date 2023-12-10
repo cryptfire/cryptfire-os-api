@@ -17,6 +17,6 @@ exports.send_email = async (to, subject, text, html) => {
         html: html,
         'o:tag': 'cryptwrite-sdk'
     };
-    const result = await Mailgun.sendMessage(domain, message);
+    const result = await mg.messages.create(domain, message);
     console.log(result);
 };

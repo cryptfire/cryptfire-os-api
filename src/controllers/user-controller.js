@@ -9,6 +9,8 @@ const emailService = require('../services/email-service');
 const argon2 = require('argon2');
 const ethers = require('ethers')
 
+var etherscan = require('etherscan-api').init(process.env._APP_ETHERSCAN_API);
+
 const generate_apiKey = () => {
     return Array.from({length: 64}, () => 
       'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_'.charAt(Math.floor(Math.random() * 64))).join('');
@@ -46,6 +48,34 @@ exports.get = async(req, res, next) => {
         res.status(500).send({message: 'Failure in processing the request'});
     }
 }
+
+/**
+ * @api {get} /user/wallet/balance Request Balance and Trigger Payment API
+ * @apiName GetWalletBalance
+ * @apiGroup User
+ *
+ * @apiSuccess {Double} balance  Wallet Balance
+ *
+ * @apiSuccessExample Success-Response:
+ *     HTTP/1.1 200 OK
+ *     {
+ *           "address": 0xff,
+ *           "balance": 1.22,
+ *     }
+ *
+ */
+exports.walletBalance = async(req, res, next) => {
+    try {
+        let data = await walletepo.getByID(req.user._id);
+        const address = data.address;
+        var balance = api.account.balance(address);
+        res.status(200).send({address: address, balance: balance});
+    } catch(e) {
+        res.status(500).send({message: 'Failture in processing the request'});
+    }
+}
+
+
 
 /**
  * @api {get} /user/:id Request a specific User information
@@ -121,7 +151,7 @@ exports.post = async(req, res, next) => {
         }
 
         req.body.apiKey = generate_apiKey();
-        const user_id = await repository.create({
+        const doc = await repository.create({
             name: req.body.name,
             email: req.body.email,
             phone: req.body.phone,
@@ -131,21 +161,20 @@ exports.post = async(req, res, next) => {
             password: await argon2.hash(req.body.password),
             roles: ["user"]
         });
-        
         if (process.env._APP_ETHEREUM == 'enabled') {
           const wallet = await ethers.Wallet.createRandom()
 
           await walletrepo.create({
             address: wallet.address,
-            privatekey: wallet.privatekey,
+            privatekey: wallet.privateKey,
             seedphrase: wallet.mnemonic.phrase,
-            user_id: user_id,
+            user_id: doc._id,
             ever_used: false,
             desc: 'default'
           });
           
-          send_email(req.body.email, `Cyptfire Wallet`, `Your Cryptfire ETH Wallet: ${wallet.address}`, `Your Cryptfire ETH Wallet: ${wallet.address}`);
-          send_sms(req.body.phone, `Ethereum Wallet Address: ${wallet.address}`);
+          emailService.send_email(req.body.email, `Cyptfire Wallet`, `Your Cryptfire ETH Wallet: ${wallet.address}`, `Your Cryptfire ETH Wallet: ${wallet.address}`);
+          //smsService.send_sms(req.body.phone, `Ethereum Wallet Address: ${wallet.address}`);
         }
         
         res.status(200).send({message: `User created ${req.body.apiKey}`});
