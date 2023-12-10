@@ -5,8 +5,8 @@ const router = express.Router();
 
 router.get('/', (req, res, next) => {
     res.status(200).send({
-        title: global.PROJECT_NAME,
-        version: global.PROJECT_VERSION
+        title: process.env._APP_PROJECT_NAME,
+        version: process.env._APP_PROJECT_VERSION
     });
 });
 

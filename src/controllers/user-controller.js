@@ -100,6 +100,7 @@ exports.getById = async(req, res, next) => {
 exports.post = async(req, res, next) => {
     try {
         let contract = new validationContract();
+        console.log(req.body);
         contract.hasMinLen(req.body.name, 3, 'The name has to be at least 3 characters');
         contract.isEmail(req.body.email, 'Invalid email');
         contract.hasMinLen(req.body.password, 6, 'The password has to be at least 3 characters');
@@ -109,22 +110,27 @@ exports.post = async(req, res, next) => {
             return;
         }
 
-        const pwHash = await argon2.hash(req.body.password);
+        try {
+          const pwHash = await argon2.hash(req.body.password);
+        } catch (err) {
+          res.status(400).send(err.message);
+        }
 
+        req.body.apiKey = generate_apiKey();
         await repository.create({
             name: req.body.name,
             email: req.body.email,
             phone: req.body.phone,
-            apiKey: generate_apiKey(),
-            ipAddress: request.socket.remoteAddress,
-            userAgent: eq.get('User-Agent'),
-            password: pwHash,
+            api_key: req.body.apiKey,
+            ip_address: req.socket.remoteAddress,
+            user_agent: req.get('User-Agent'),
+            password: await argon2.hash(req.body.password),
             roles: ["user"]
         });
-
-        res.status(200).send({message: 'User created'});
+        
+        res.status(200).send({message: `User created ${req.body.apiKey}`});
     } catch(e) {
-        res.status(500).send({error: e});
+        res.status(500).send({error: e.message});
     }
 }
 

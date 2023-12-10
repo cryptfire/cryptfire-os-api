@@ -29,7 +29,7 @@ const schema = new Schema({
     },
     fiatBalance: {
         type: Number,
-        required: true,
+        required: false,
         default: 0
     },
     roles: [{
